@@ -40,6 +40,9 @@ def get_coins_by_puzzle_hash(
         end_height=end_height
         ))
 
+def get_coin_by_coin_id(coin_id: bytes32):
+    return asyncio.run(network.sim_client.get_coin_record_by_name(coin_id))
+
 def get_block_height():
     return network.sim.get_height()
 
