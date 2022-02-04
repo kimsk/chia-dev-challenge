@@ -16,14 +16,15 @@ import utils
 block_height = 5
 
 # valid number
+_, oracle_puzzhash = helpers.get_oracle(block_height)
 number = 42
-ticket, puzzhash = helpers.get_ticket(number, block_height)
+ticket, puzzhash = helpers.get_ticket(oracle_puzzhash, number, block_height)
 assert  puzzhash == ticket.get_tree_hash()
 
 utils.print_sexp(ticket)
 
 # invalid number
-assert None == helpers.get_ticket(100, block_height)
+assert None == helpers.get_ticket(oracle_puzzhash, 100, block_height)
 
 
 # win

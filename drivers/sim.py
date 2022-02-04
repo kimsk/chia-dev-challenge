@@ -30,8 +30,21 @@ def launch_smart_coin(wallet: Wallet, puzzle: Program, amt):
 def end():
     asyncio.run(network.close())
 
-def get_coin_by_puzzle_hash(puzzle_hash):
-    return asyncio.run(network.sim_client.get_coin_records_by_puzzle_hash(puzzle_hash))
+def get_coins_by_puzzle_hash(
+        puzzle_hash, 
+        include_spent_coins = True,
+        end_height = None):
+    return asyncio.run(network.sim_client.get_coin_records_by_puzzle_hash(
+        puzzle_hash, 
+        include_spent_coins=include_spent_coins,
+        end_height=end_height
+        ))
+
+def get_block_height():
+    return network.sim.get_height()
+
+def pass_blocks(number):
+    network.sim.pass_blocks(number)
 
 def get_normal_coin_spend(wallet: Wallet, coin, conditions):
     assert coin != None

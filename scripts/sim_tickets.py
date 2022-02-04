@@ -1,6 +1,3 @@
-# test buying ticket
-# src/ticket.clsp
-
 import sys
 sys.path.insert(0, "../drivers")
 
@@ -15,9 +12,10 @@ import sim
 import utils
 
 block_height = 5
+_, oracle_puzzhash = helpers.get_oracle(block_height)
 
 number = 42
-ticket, puzzhash = helpers.get_ticket(number, block_height)
+ticket, puzzhash = helpers.get_ticket(oracle_puzzhash, number, block_height)
 assert  puzzhash == ticket.get_tree_hash()
 
 alice: Wallet = sim.network.make_wallet("alice")
