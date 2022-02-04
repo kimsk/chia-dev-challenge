@@ -35,20 +35,30 @@ sim.farm(farmer=bob)
 charlie: Wallet = sim.network.make_wallet("charlie")
 sim.farm(farmer=charlie)
 
+print(f'alice balance: {alice.balance()}')
+print(f'bob balance: {bob.balance()}')
+print(f'charlie balance: {charlie.balance()}')
+
+
 def buy_ticket(wallet: Wallet, number, block_height):
     ticket, _ = helpers.get_ticket(oracle_puzzhash, number, block_height)
     coin = sim.launch_smart_coin(wallet, ticket, helpers.TICKET_COST)
     return ticket, coin
 
 # buy 4 tickets
-# _, alice_coin = buy_ticket(alice, 5, block_height)
-# _, alice_coin2 = buy_ticket(alice, 15, block_height)
-# _, bob_coin = buy_ticket(bob, 15, block_height)
-# _, bob_coin = buy_ticket(bob, 52, block_height)
-# _, charlie_coin = buy_ticket(charlie, 26, block_height)
-
-
+_, alice_coin = buy_ticket(alice, 5, block_height)
 _, alice_coin2 = buy_ticket(alice, 15, block_height)
+_, bob_coin = buy_ticket(bob, 15, block_height)
+_, bob_coin = buy_ticket(bob, 52, block_height)
+_, charlie_coin = buy_ticket(charlie, 26, block_height)
+
+
+# _, alice_coin2 = buy_ticket(alice, 15, block_height)
+
+print("tickets bought")
+print(f'alice balance: {alice.balance()}')
+print(f'bob balance: {bob.balance()}')
+print(f'charlie balance: {charlie.balance()}')
 
 
 # until block height reaches
@@ -97,14 +107,17 @@ winning_amount = math.floor(
     / len(winning_tickets))
 # assert total_amount == 5000
 # assert winning_amount == 2250
-print(puzzhash_to_puzzles)
+
 # prepare spends
 spends = []
+mega_mojos_sig = G2Element()
 
 for t in all_tickets:
+    parent_coin_id = t.coin.parent_coin_info
+    parent_coin_puzzle_hash = sim.get_coin_by_coin_id(parent_coin_id).coin.puzzle_hash
     solution = Program.to([
         winning_number, 
-        t.coin.parent_coin_info, 
+        parent_coin_puzzle_hash, 
         winning_amount
     ])
     spend = CoinSpend(
@@ -113,6 +126,13 @@ for t in all_tickets:
         solution
     )
     spends.append(spend)
+    sig = AugSchemeMPL.sign(
+        helpers.MEGA_MOJOS_SK,
+        std_hash(int_to_bytes(winning_number) + int_to_bytes(winning_amount))
+        + t.coin.name()
+        + DEFAULT_CONSTANTS.AGG_SIG_ME_ADDITIONAL_DATA 
+    )
+    mega_mojos_sig = AugSchemeMPL.aggregate([mega_mojos_sig, sig])
 
 oracle_spend = CoinSpend(
     oracle_coin,
@@ -120,17 +140,12 @@ oracle_spend = CoinSpend(
     Program.to([winning_number])
 )
 spends.append(oracle_spend)
-print(spends)
 
 approver_sig = AugSchemeMPL.sign(
     helpers.APPROVER_SK,
     std_hash(int_to_bytes(block_height) + int_to_bytes(winning_number))
     + oracle_coin.name()
     + DEFAULT_CONSTANTS.AGG_SIG_ME_ADDITIONAL_DATA
-)
-mega_mojos_sig = AugSchemeMPL.sign(
-    helpers.MEGA_MOJOS_SK,
-    std_hash(int_to_bytes(winning_number) + int_to_bytes(winning_amount))
 )
 print(approver_sig)
 print(mega_mojos_sig)
@@ -149,6 +164,12 @@ spend_bundle = SpendBundle(
 
 result = sim.push_tx(spend_bundle)
 print(result)
+
+print("winning number announced")
+print(f'alice balance: {alice.balance()}')
+print(f'bob balance: {bob.balance()}')
+print(f'charlie balance: {charlie.balance()}')
+
 
 sim.end()
 
