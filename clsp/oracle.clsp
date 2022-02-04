@@ -1,0 +1,15 @@
+(mod 
+    (
+        APPROVER_PK 
+        BLOCK_HEIGHT 
+        winning_number
+    )
+
+    (include condition_codes.clib)
+
+    (list
+        (list AGG_SIG_ME APPROVER_PK (sha256 BLOCK_HEIGHT winning_number))
+        (list CREATE_PUZZLE_ANNOUNCEMENT (sha256 (q . "block_height") BLOCK_HEIGHT))
+        (list CREATE_PUZZLE_ANNOUNCEMENT (sha256 (q . "winning_number") winning_number))
+    )
+)

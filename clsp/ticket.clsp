@@ -1,0 +1,46 @@
+(mod (
+        PK 
+        ORACLE_PUZZLE_HASH 
+        NUMBER 
+        BLOCK_HEIGHT 
+        winning_number 
+        player_puzzle_hash 
+        winning_amount
+    )
+    
+    (include condition_codes.clib)
+
+    ; if this is winning ticket, also CREATE_COIN to the ticket owner
+    (defun-inline possibly_winner 
+        (
+            PK 
+            NUMBER 
+            player_puzzle_hash 
+            winning_amount 
+            conditions
+        )
+        (if (= NUMBER winning_number)
+            (c 
+                (list CREATE_COIN player_puzzle_hash winning_amount)
+                conditions
+            )
+            conditions
+        )
+    )
+    
+    ; main
+    (list
+        (possibly_winner
+            PK
+            NUMBER
+            player_puzzle_hash
+            winning_amount
+            (list
+                (list AGG_SIG_ME PK (sha256 winning_number winning_amount))
+                (list ASSERT_HEIGHT_ABSOLUTE BLOCK_HEIGHT)
+                (list ASSERT_PUZZLE_ANNOUNCEMENT ORACLE_PUZZLE_HASH (sha256 (q . "block_height") BLOCK_HEIGHT))
+                (list ASSERT_PUZZLE_ANNOUNCEMENT ORACLE_PUZZLE_HASH (sha256 (q . "winning_number") winning_number))
+            )
+        )
+    )
+)

@@ -1,0 +1,4 @@
+include/
+main.sym
+*.clsp.hex
+*.pyc
