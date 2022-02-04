@@ -46,6 +46,9 @@ def get_coin_by_coin_id(coin_id: bytes32):
 def get_block_height():
     return network.sim.get_height()
 
+def get_block_record_by_height(height):
+    return asyncio.run(network.sim_client.get_block_record_by_height(height))
+
 def pass_blocks(number):
     network.sim.pass_blocks(number)
 
