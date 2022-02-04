@@ -6,6 +6,7 @@ from blspy import (PrivateKey, AugSchemeMPL, G1Element, G2Element)
 
 from cdv.test import Wallet
 from cdv.util.load_clvm import load_clvm
+from chia.consensus.default_constants import DEFAULT_CONSTANTS
 from chia.types.blockchain_format.program import Program
 from chia.types.blockchain_format.sized_bytes import bytes32
 from chia.types.coin_spend import CoinSpend
@@ -40,11 +41,14 @@ def buy_ticket(wallet: Wallet, number, block_height):
     return ticket, coin
 
 # buy 4 tickets
-_, alice_coin = buy_ticket(alice, 5, block_height)
+# _, alice_coin = buy_ticket(alice, 5, block_height)
+# _, alice_coin2 = buy_ticket(alice, 15, block_height)
+# _, bob_coin = buy_ticket(bob, 15, block_height)
+# _, bob_coin = buy_ticket(bob, 52, block_height)
+# _, charlie_coin = buy_ticket(charlie, 26, block_height)
+
+
 _, alice_coin2 = buy_ticket(alice, 15, block_height)
-_, bob_coin = buy_ticket(bob, 15, block_height)
-_, bob_coin = buy_ticket(bob, 52, block_height)
-_, charlie_coin = buy_ticket(charlie, 26, block_height)
 
 
 # until block height reaches
@@ -78,9 +82,9 @@ for ticket, puzzhash in possible_tickets:
         else:
             losing_tickets.extend(found)
 
-assert len(all_tickets) == 5
-assert len(winning_tickets) == 2
-assert len(losing_tickets) == 3
+# assert len(all_tickets) == 5
+# assert len(winning_tickets) == 2
+# assert len(losing_tickets) == 3
 print(losing_tickets)
 print(winning_tickets)
 
@@ -91,8 +95,8 @@ total_amount = sum(t.coin.amount for t in all_tickets)
 winning_amount = math.floor(
     (total_amount * (1 - helpers.MEGA_MOJOS_FEE))
     / len(winning_tickets))
-assert total_amount == 5000
-assert winning_amount == 2250
+# assert total_amount == 5000
+# assert winning_amount == 2250
 print(puzzhash_to_puzzles)
 # prepare spends
 spends = []
@@ -108,19 +112,21 @@ for t in all_tickets:
         puzzhash_to_puzzles[t.coin.puzzle_hash.hex()],
         solution
     )
-    # spends.append(spend)
+    spends.append(spend)
 
 oracle_spend = CoinSpend(
     oracle_coin,
     oracle,
     Program.to([winning_number])
 )
-spends.append(spend)
+spends.append(oracle_spend)
 print(spends)
 
 approver_sig = AugSchemeMPL.sign(
     helpers.APPROVER_SK,
     std_hash(int_to_bytes(block_height) + int_to_bytes(winning_number))
+    + oracle_coin.name()
+    + DEFAULT_CONSTANTS.AGG_SIG_ME_ADDITIONAL_DATA
 )
 mega_mojos_sig = AugSchemeMPL.sign(
     helpers.MEGA_MOJOS_SK,
@@ -129,7 +135,13 @@ mega_mojos_sig = AugSchemeMPL.sign(
 print(approver_sig)
 print(mega_mojos_sig)
 
-agg_sig = AugSchemeMPL.aggregate([approver_sig, mega_mojos_sig])
+agg_sig = AugSchemeMPL.aggregate(
+    [
+        approver_sig, 
+        mega_mojos_sig
+    ]
+)
+
 spend_bundle = SpendBundle(
     spends,
     agg_sig

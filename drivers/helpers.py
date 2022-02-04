@@ -21,7 +21,6 @@ GENESIS_ORACLE: Program = load_clvm(
 
 def get_oracle(block_height) -> Tuple[Program, bytes32]:
     oracle = GENESIS_ORACLE.curry(block_height)
-    print(oracle)
     return oracle, oracle.get_tree_hash()
 
 # Secret Key: 470f15761af389ad5fd8f8514ef189a577f929b73649b45a685f336b4c6f2a0d
