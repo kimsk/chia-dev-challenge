@@ -1,3 +1,5 @@
+> # For Clovyr Chia Developer Challenge, please review this [tag](https://github.com/kimsk/chia-dev-challenge/tree/clovyr-challenge-eligible).
+
 # Mega Mojos :seedling:
 
 ## Overview
