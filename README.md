@@ -114,10 +114,13 @@ To make sure the ticket coin is not spent by any malicious user :ninja:, it will
 (ASSERT_PUZZLE_ANNOUNCEMENT (sha256 ORACLE_PUZZLE_HASH (sha256 (q . "block_height") BLOCK_HEIGHT)))
 (ASSERT_PUZZLE_ANNOUNCEMENT (sha256 ORACLE_PUZZLE_HASH (sha256 (q . "winning_number") winning_number)))
 ```
+## Diagram
+![](karlkim-Chia-Clovyr-DevChallenge.png)
 
 ## Testings
 
--[oracle](./scripts/oracle.py)
--[buying ticket](./scripts/buy_ticket.py)
--[winners](./script/sim_winning_tickets.py)
--[sim_no_winners.py](./script/sim_no_winners.py)
+- [demo.py](./scripts/demo.py)
+- [oracle](./scripts/oracle.py)
+- [buying ticket](./scripts/buy_ticket.py)
+- [winners](./script/sim_winning_tickets.py)
+- [no winners](./script/sim_no_winners.py)
