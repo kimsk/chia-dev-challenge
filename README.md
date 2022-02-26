@@ -1,5 +1,3 @@
-> # For Clovyr Chia Developer Challenge, please review this [tag](https://github.com/kimsk/chia-dev-challenge/tree/clovyr-challenge-eligible).
-
 # Mega Mojos :seedling:
 
 ## Overview
@@ -18,6 +16,24 @@ A lottery game like **Mega Millions** or **Powerball** simulated on Chia Blockch
 3. Once the blockchain reaches the specific block height, the winning number is announced. The lottery offical will gather all tickets and spend them together with the oracle.
 4. The lottery offical will take 10% cut and divide the rest to winners who pick the correct number.
 5. If there is no winner, the whole reward will be given to the fabulous Chia farmer :farmer:.
+
+## Chia Concept
+
+### State 
+
+Active tickets can be found by scanning the blockchain and looking for unspent coins with specific puzzle hashes (i.e., puzzle hash is unique for tickets with the same number and block height).
+
+### Aggregated Signatures
+
+A ticket coin can be spent only when the aggregated signature includes the signature from the lottery official. An oracle coin can be spent only when the aggregated signature includes the signature from the approver. The spend bundle has to have these two signatures aggregated.
+
+### Announcements
+
+A ticket coin can be spent only if the oracle coin announces the same winning number and block height is also spent in the same block.
+
+### Hidden Information
+
+A ticket's number and block height are revealed only when the coin is spent. 
 
 ## Chialisp
 
