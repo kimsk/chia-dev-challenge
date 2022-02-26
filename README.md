@@ -9,10 +9,10 @@ A lottery game like **Mega Millions** or **Powerball** simulated on Chia Blockch
 
 ## Idea
 
-1. A player buy ticket by selecting a number from 0-99 and send 1000 mojos to a ticket smart coin.
+1. A player buys ticket by selecting a number from 0-99 and send 1000 mojos to a ticket smart coin.
 2. Each ticket smart coin puzzle curries in
     - `PK`: the lottery official has the `SK` to sign the spend.
-    - `ORACLE_PUZZLE_HASH`: oracle that announce the same winning number and block height has to be spent together.
+    - `ORACLE_PUZZLE_HASH`: puzzle hash of the oracle who announces the winning number and block height.
     - `NUMBER`: a selected number.
     - `BLOCK_HEIGHT`: each drawing has to happen after this block height (time simulation). 
 3. Once the blockchain reaches the specific block height, the winning number is announced. The lottery offical will gather all tickets and spend them together with the oracle.
@@ -39,7 +39,7 @@ A lottery game like **Mega Millions** or **Powerball** simulated on Chia Blockch
     )
 )
 ```
-When the oracle is spent, it will announce `block height` and `winning number` which all tickets will have to verify. The approver of the lottery official has to sign the spend too.
+When the oracle is spent, it announces `block height` and `winning number` which all tickets will have to verify. The approver of the lottery official has to sign the spend too.
 
 > The approver has to be different key from the official who sign the spend for tickets.)
 
@@ -90,7 +90,7 @@ When the oracle is spent, it will announce `block height` and `winning number` w
     )
 )
 ```
-A ticket is differentiated by `number` and `block height`. For example, if alice buys a ticket with number `42` and block height `101`, next drawing, the block height will be different, so even if the number is the same, the puzzle hash will noto be the same.
+A ticket is differentiated by `number` and `block height`. For example, if alice buys a ticket with number `42` and block height `101`, next drawing, the block height will be different, so even if the number is the same, the puzzle hash will not be the same.
 
 ```lisp
 (
@@ -119,8 +119,8 @@ To make sure the ticket coin is not spent by any malicious user :ninja:, it will
 
 ## Testings
 
-- [demo.py](./scripts/demo.py)
+- [demo](./scripts/demo.py)
 - [oracle](./scripts/oracle.py)
-- [buying ticket](./scripts/buy_ticket.py)
-- [winners](./script/sim_winning_tickets.py)
-- [no winners](./script/sim_no_winners.py)
+- [buy tickets](./scripts/buy_tickets.py)
+- [winners](./scripts/sim_winning_tickets.py)
+- [no winners](./scripts/sim_no_winners.py)
