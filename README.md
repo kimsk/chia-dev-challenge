@@ -31,6 +31,10 @@ A ticket coin can be spent only when the aggregated signature includes the signa
 
 A ticket coin can be spent only if the oracle coin announces the same winning number and block height is also spent in the same block.
 
+### Block Height Assertion
+
+A ticket coin can be spent only when the specific block height is reached. The lottery official can't spend the ticket coins prematurely.
+
 ### Hidden Information
 
 A ticket's number and block height are revealed only when the coin is spent. 
